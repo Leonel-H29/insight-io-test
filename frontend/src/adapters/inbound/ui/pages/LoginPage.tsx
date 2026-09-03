@@ -11,7 +11,7 @@ export const LoginPage = () => {
     } catch {}
   };
   return (
-    <main className="min-vh-100 d-flex align-items-center bg-body-tertiary">
+    <main className="min-vh-100 d-flex align-items-center bg-body">
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-sm-10 col-md-6 col-lg-4">
@@ -27,9 +27,11 @@ export const LoginPage = () => {
                   </div>
                 )}
                 <button
+                  type="button"
                   className="btn btn-primary w-100"
                   onClick={() => void submit()}
                   disabled={loading}
+                  aria-label="Sign in with Auth0"
                 >
                   {loading ? <Spinner /> : 'Sign in'}
                 </button>

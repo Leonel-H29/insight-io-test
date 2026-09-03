@@ -4,12 +4,14 @@ import { useAuth } from '../hooks/useAuth';
 import { useTasks } from '../hooks/useTasks';
 import { TaskCard } from '../components/TaskCard';
 import { TaskForm } from '../components/TaskForm';
+import { UserInfo } from '../components/UserInfo';
+import { ThemeToggle } from '../components/ThemeToggle';
 import { toTaskViewModel } from '../view-models/TaskViewModel';
 import { Spinner } from '../components/Spinner';
 import { TaskStatus } from '../../../../domain/task/entities/TaskStatus';
 import type { TaskResult } from '../../../../application/task/dto/TaskResult';
 export const TasksPage = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const {
     tasks,
     loading,
@@ -24,19 +26,24 @@ export const TasksPage = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const navigate = useNavigate();
   return (
-    <main className="min-vh-100 bg-body-tertiary">
-      <nav className="navbar bg-white border-bottom">
-        <div className="container">
-          <span className="navbar-brand fw-semibold">Task Management</span>
-          <button
-            className="btn btn-outline-secondary btn-sm"
-            onClick={() => {
-              logout();
-              navigate('/login');
-            }}
-          >
-            Logout
-          </button>
+    <main className="min-vh-100 bg-body">
+      <nav className="navbar bg-body border-bottom">
+        <div className="container d-flex justify-content-between align-items-center">
+          <span className="navbar-brand fw-semibold mb-0">Task Management</span>
+          <div className="d-flex align-items-center gap-2">
+            <ThemeToggle />
+            {user && <UserInfo user={user} />}
+            <button
+              className="btn btn-outline-secondary btn-sm"
+              onClick={() => {
+                logout();
+                navigate('/login');
+              }}
+              aria-label="Logout"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </nav>
       <div className="container py-4">

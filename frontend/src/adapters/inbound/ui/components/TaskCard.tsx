@@ -31,44 +31,54 @@ export const TaskCard = ({
       <div className="d-flex flex-wrap gap-2">
         {task.canStart && (
           <button
-            className="btn btn-sm btn-outline-primary"
+            type="button"
+            className="btn btn-sm btn-primary"
             disabled={busy}
             onClick={() => void onStart()}
+            aria-label={`Start task: ${task.title}`}
           >
             Start
           </button>
         )}
         {task.canDone && (
           <button
+            type="button"
             className="btn btn-sm btn-success"
             disabled={busy}
             onClick={() => void onDone()}
+            aria-label={`Mark as done: ${task.title}`}
           >
             {busy ? <Spinner /> : 'Mark as Done'}
           </button>
         )}
         {task.canArchive && (
           <button
-            className="btn btn-sm btn-outline-secondary"
+            type="button"
+            className="btn btn-sm btn-secondary"
             disabled={busy}
             onClick={() => void onArchive()}
+            aria-label={`Archive task: ${task.title}`}
           >
             Archive
           </button>
         )}
         {task.canEdit && (
           <button
-            className="btn btn-sm btn-outline-dark"
+            type="button"
+            className="btn btn-sm btn-warning"
             disabled={busy}
             onClick={onEdit}
+            aria-label={`Edit task: ${task.title}`}
           >
             Edit
           </button>
         )}
         <button
-          className="btn btn-sm btn-outline-danger"
+          type="button"
+          className="btn btn-sm btn-danger"
           disabled={busy}
           onClick={() => void onDelete()}
+          aria-label={`Delete task: ${task.title}`}
         >
           Delete
         </button>

@@ -39,8 +39,11 @@ export class Auth0AuthenticationRepository implements AuthenticationRepository {
   async getCurrentUser(): Promise<AuthenticatedUser | null> {
     const id = this.client.user?.sub;
     if (!this.client.isAuthenticated || !id) return null;
-    return this.client.user?.email
-      ? { id, email: this.client.user.email }
-      : { id };
+    return {
+      id,
+      email: this.client.user?.email,
+      name: this.client.user?.name,
+      picture: this.client.user?.picture,
+    };
   }
 }

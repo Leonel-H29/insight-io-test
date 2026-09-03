@@ -1,6 +1,8 @@
 export interface AuthenticatedUser {
   id: string;
   email?: string;
+  name?: string;
+  picture?: string;
 }
 export interface AuthenticationRepository {
   login(): Promise<void>;

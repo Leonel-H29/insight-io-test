@@ -17,6 +17,7 @@ export const TaskForm = ({
 }: Props) => {
   const [title, setTitle] = useState(initialTitle);
   const [error, setError] = useState('');
+  const errorId = `task-form-error-${Math.random()}`;
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     const value = title.trim();
@@ -46,10 +47,21 @@ export const TaskForm = ({
           }
           placeholder="What needs to be done?"
           disabled={loading}
+          aria-describedby={error ? errorId : undefined}
+          aria-label="Task title"
         />
-        {error && <div className="invalid-feedback">{error}</div>}
+        {error && (
+          <div className="invalid-feedback" id={errorId}>
+            {error}
+          </div>
+        )}
       </div>
-      <button className="btn btn-primary" disabled={loading}>
+      <button
+        type="submit"
+        className="btn btn-primary"
+        disabled={loading}
+        aria-label={submitLabel}
+      >
         {loading ? <Spinner /> : submitLabel}
       </button>
       {onCancel && (
@@ -58,6 +70,7 @@ export const TaskForm = ({
           className="btn btn-outline-secondary"
           onClick={onCancel}
           disabled={loading}
+          aria-label="Cancel"
         >
           Cancel
         </button>
