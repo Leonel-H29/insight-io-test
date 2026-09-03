@@ -1,0 +1,1 @@
+Integration tests for the MySQL adapter can be added/run against a disposable or dedicated PlanetScale database. The application already exposes the adapter behind the TaskRepository port; pure business tests do not require a database.
