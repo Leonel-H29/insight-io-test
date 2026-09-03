@@ -79,7 +79,9 @@ export const TasksPage = () => {
               </div>
             ) : (
               tasks.map((task: TaskResult) => {
-                const vm = toTaskViewModel(task);
+                const ownerUsername =
+                  user?.username || user?.name || user?.email || 'User';
+                const vm = toTaskViewModel(task, ownerUsername);
                 return editingId === task.id ? (
                   <div className="card shadow-sm mb-3" key={task.id}>
                     <div className="card-body">

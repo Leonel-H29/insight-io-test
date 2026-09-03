@@ -41,6 +41,7 @@ export class Auth0AuthenticationRepository implements AuthenticationRepository {
     if (!this.client.isAuthenticated || !id) return null;
     return {
       id,
+      username: this.client.user?.nickname,
       email: this.client.user?.email,
       name: this.client.user?.name,
       picture: this.client.user?.picture,

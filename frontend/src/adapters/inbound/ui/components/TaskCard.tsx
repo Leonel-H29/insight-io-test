@@ -22,6 +22,16 @@ export const TaskCard = ({
     <div className="card-body d-flex flex-column flex-md-row gap-3 align-items-md-center">
       <div className="flex-grow-1">
         <h2 className="h5 mb-2">{task.title}</h2>
+        <div className="small text-body-secondary mb-2">
+          {task.ownerUsername} -{' '}
+          {new Date(task.updatedAt).toLocaleString('en-US', {
+            month: '2-digit',
+            day: '2-digit',
+            year: '2-digit',
+            hour: 'numeric',
+            minute: 'numeric',
+          })}
+        </div>
         <span
           className={`badge ${task.status === 'DONE' ? 'text-bg-success' : task.status === 'ARCHIVED' ? 'text-bg-secondary' : task.status === 'IN_PROGRESS' ? 'text-bg-primary' : 'text-bg-warning'}`}
         >
