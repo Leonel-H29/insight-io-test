@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug backend",
+      "program": "${workspaceFolder}/src/main/bootstrap.ts",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/tsx",
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env.local",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal"
+    }
+  ]
+}
