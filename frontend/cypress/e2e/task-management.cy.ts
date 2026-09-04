@@ -1,3 +1,6 @@
+/// <reference types="cypress" />
+/// <reference path="../../cypress.d.ts" />
+
 describe('Task management', () => {
   it('logs in, creates a task, starts it and marks it done', () => {
     cy.login();

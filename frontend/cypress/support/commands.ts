@@ -1,3 +1,10 @@
+/// <reference types="cypress" />
+/// <reference path="../../cypress.d.ts" />
+
+Cypress.Commands.add('login', () => {
+  cy.loginAs(Cypress.env('email') as string, Cypress.env('password') as string);
+});
+
 Cypress.Commands.add('loginAs', (email: string, password: string) => {
   const domain = Cypress.env('auth0Domain') as string;
   if (!domain || !email || !password)
@@ -6,12 +13,6 @@ Cypress.Commands.add('loginAs', (email: string, password: string) => {
     );
   cy.visit('/login');
   cy.contains('button', 'Sign in with Auth0').click();
-  Cypress.Commands.add('login', () => {
-    cy.loginAs(
-      Cypress.env('email') as string,
-      Cypress.env('password') as string
-    );
-  });
   cy.origin(
     `https://${domain}`,
     { args: { email, password } },
