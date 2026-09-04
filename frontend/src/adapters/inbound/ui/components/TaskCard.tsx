@@ -23,7 +23,7 @@ export const TaskCard = ({
       <div className="flex-grow-1">
         <h2 className="h5 mb-2">{task.title}</h2>
         <div className="small text-body-secondary mb-2">
-          {task.ownerUsername} -{' '}
+          Owner: {task.ownerUsername} -{' '}
           {new Date(task.updatedAt).toLocaleString('en-US', {
             month: '2-digit',
             day: '2-digit',
@@ -37,6 +37,11 @@ export const TaskCard = ({
         >
           {task.status.replace('_', ' ')}
         </span>
+        {!task.isOwner && (
+          <div className="small text-body-secondary mt-2">
+            View only: only the owner can modify this task.
+          </div>
+        )}
       </div>
       <div className="d-flex flex-wrap gap-2">
         {task.canStart && (

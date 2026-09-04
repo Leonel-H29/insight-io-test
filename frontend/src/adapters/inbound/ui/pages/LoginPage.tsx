@@ -1,14 +1,21 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Spinner } from '../components/Spinner';
+import { useToast } from '../hooks/useToast';
 export const LoginPage = () => {
   const { login, error, loading } = useAuth();
+  const toast = useToast();
   const navigate = useNavigate();
   const submit = async () => {
     try {
       await login();
       navigate('/tasks');
-    } catch {}
+    } catch {
+      toast.error(
+        'Sign-in failed',
+        'We could not sign you in. Please check your credentials and try again.'
+      );
+    }
   };
   return (
     <main className="min-vh-100 d-flex align-items-center bg-body">

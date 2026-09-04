@@ -38,13 +38,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const dependencies = useMemo(() => createAppDependencies(auth), [auth]);
   const [currentUser, setCurrentUser] =
     useState<Awaited<ReturnType<typeof auth.getCurrentUser>>>(null);
+  const [userResolutionComplete, setUserResolutionComplete] = useState(false);
   const [error, setError] = useState('');
-  const loading = isLoading || (isAuthenticated && currentUser === null);
+  const loading = isLoading || !userResolutionComplete;
   useEffect(() => {
+    setUserResolutionComplete(false);
     void auth
       .getCurrentUser()
       .then(setCurrentUser)
-      .catch(() => setCurrentUser(null));
+      .catch(() => setCurrentUser(null))
+      .finally(() => setUserResolutionComplete(true));
   }, [auth, isAuthenticated, auth0User]);
   const login = useCallback(async () => {
     setError('');

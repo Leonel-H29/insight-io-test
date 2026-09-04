@@ -43,7 +43,7 @@ npm test
 npm run test:e2e
 ```
 
-Cypress expects a configured Auth0 user and the application to be running. The E2E flow can use credentials supplied through Cypress environment variables; no production authentication bypass is included.
+Cypress expects a configured Auth0 user and the application to be running. The shared-visibility E2E scenario is enabled when a second real Auth0 user is supplied through `CYPRESS_emailB` and `CYPRESS_passwordB`; no production authentication bypass is included.
 
 ## Production build
 
@@ -55,10 +55,16 @@ npm run build
 
 - `GET /health`
 - `POST /api/tasks`
-- `GET /api/tasks`
+- `GET /api/tasks?page=1&pageSize=10` (returns `tasks`, `page`, `pageSize`, `totalItems`, and `totalPages`)
 - `GET /api/tasks/:taskId`
 - `PATCH /api/tasks/:taskId`
 - `DELETE /api/tasks/:taskId`
 - `PATCH /api/tasks/:taskId/done`
 
 All task endpoints require `Authorization: Bearer <Auth0 access token>`.
+
+### Visibility and ownership
+
+All authenticated users can view the shared task collection and open tasks created by other users. Every task retains the ID of its owner, derived by the backend from the verified Auth0 identity when the task is created.
+
+Shared visibility does not grant shared modification permissions. Only the task owner can update, delete, or mark a task as `DONE`; the backend enforces these ownership rules independently of the frontend.

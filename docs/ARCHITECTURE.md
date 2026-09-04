@@ -58,6 +58,10 @@ WHERE id = ? AND owner_id = ? AND status = 'IN_PROGRESS'
 
 One concurrent request can affect one row. A second request observes `DONE` and returns the existing task, making the endpoint idempotent.
 
+Task reads are shared: authenticated list and detail requests use `listAll` and `findById`, so users can view tasks owned by other users. Owner-scoped repository operations remain in place for update, delete, and completion authorization. Shared visibility is intentionally distinct from shared modification permissions.
+
+The shared list is paginated at the repository boundary. The MySQL adapter applies `LIMIT`/`OFFSET` and obtains the total count, while the frontend requests only the active page and can refresh it without a full document reload.
+
 ## 7. API activity logging
 
 Logging middleware records timestamp, method, path, sanitized headers, params, query, actor and response status/duration. Authorization credentials are redacted.

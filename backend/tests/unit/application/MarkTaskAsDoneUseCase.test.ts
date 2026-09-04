@@ -15,8 +15,10 @@ const fake = (initial: Task): TaskRepository => {
   let current = initial;
   return {
     create: async (t) => t,
+    findById: async (id) => (id === current.id ? current : null),
     findByIdForOwner: async (id, o) =>
       id === current.id && o === current.ownerId ? current : null,
+    listAll: async () => ({ tasks: [current], totalItems: 1 }),
     listByOwner: async () => [current],
     updateTitle: async () => current,
     updateStatus: async (_id, _o, from, to) => {
@@ -58,6 +60,6 @@ describe('MarkTaskAsDoneUseCase', () => {
         '1',
         'u2'
       )
-    ).rejects.toThrow('Task not found');
+    ).rejects.toThrow('Only the task owner can mark a task as done.');
   });
 });

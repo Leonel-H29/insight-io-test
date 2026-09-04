@@ -1,4 +1,4 @@
-import { TaskResult } from '../../dto/TaskResult.js';
+import { TaskPageResult } from '../../dto/TaskPageResult.js';
 export interface ListTasksPort {
-  execute(ownerId: string): Promise<TaskResult[]>;
+  execute(page: number, pageSize: number): Promise<TaskPageResult>;
 }

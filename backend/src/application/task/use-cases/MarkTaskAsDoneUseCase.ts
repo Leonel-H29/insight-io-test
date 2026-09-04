@@ -5,11 +5,13 @@ import { toTaskResult } from '../dto/TaskResultMapper.js';
 import { TaskNotFoundError } from '../exceptions/TaskNotFoundError.js';
 import { TaskStatus } from '../../../domain/task/entities/TaskStatus.js';
 import { InvalidTaskStatusTransitionError } from '../../../domain/task/exceptions/InvalidTaskStatusTransitionError.js';
+import { TaskCompletionNotAllowedError } from '../exceptions/TaskCompletionNotAllowedError.js';
 export class MarkTaskAsDoneUseCase implements MarkTaskAsDonePort {
   constructor(private readonly repository: TaskRepository) {}
   async execute(id: string, ownerId: string): Promise<TaskResult> {
-    const task = await this.repository.findByIdForOwner(id, ownerId);
+    const task = await this.repository.findById(id);
     if (!task) throw new TaskNotFoundError();
+    if (task.ownerId !== ownerId) throw new TaskCompletionNotAllowedError();
     if (task.status === TaskStatus.DONE) return toTaskResult(task);
     if (!task.canTransitionTo(TaskStatus.DONE))
       throw new InvalidTaskStatusTransitionError(task.status, TaskStatus.DONE);

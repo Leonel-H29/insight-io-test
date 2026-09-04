@@ -2,7 +2,9 @@ import type { TaskRepository } from '../../../../application/task/ports/outbound
 import type { CreateTaskCommand } from '../../../../application/task/commands/CreateTaskCommand';
 import type { UpdateTaskCommand } from '../../../../application/task/commands/UpdateTaskCommand';
 import type { TaskResult } from '../../../../application/task/dto/TaskResult';
+import type { TaskPageResult } from '../../../../application/task/dto/TaskPageResult';
 import type { ApiTaskDto } from '../dto/ApiTaskDto';
+import type { ApiTaskPageDto } from '../dto/ApiTaskPageDto';
 import { ApiTaskMapper } from '../mappers/ApiTaskMapper';
 import type { AuthenticationRepository } from '../../../../application/task/ports/outbound/AuthenticationRepository';
 import { Environment } from '../../../../infrastructure/config/Environment';
@@ -29,9 +31,16 @@ export class HttpTaskRepository implements TaskRepository {
     const body = (await response.json()) as { data: T };
     return body.data;
   }
-  async list(): Promise<TaskResult[]> {
-    const data = await this.request<ApiTaskDto[]>('/api/tasks');
-    return data.map(ApiTaskMapper.toApplication);
+  async list(page: number, pageSize: number): Promise<TaskPageResult> {
+    const query = new URLSearchParams({
+      page: String(page),
+      pageSize: String(pageSize),
+    });
+    const data = await this.request<ApiTaskPageDto>(`/api/tasks?${query}`);
+    return {
+      ...data,
+      tasks: data.tasks.map(ApiTaskMapper.toApplication),
+    };
   }
   async get(id: string): Promise<TaskResult> {
     return ApiTaskMapper.toApplication(

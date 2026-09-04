@@ -6,7 +6,11 @@ import { GetTaskPort } from '../../../../application/task/ports/inbound/GetTaskP
 import { UpdateTaskPort } from '../../../../application/task/ports/inbound/UpdateTaskPort.js';
 import { DeleteTaskPort } from '../../../../application/task/ports/inbound/DeleteTaskPort.js';
 import { MarkTaskAsDonePort } from '../../../../application/task/ports/inbound/MarkTaskAsDonePort.js';
-import { createTaskSchema, updateTaskSchema } from '../dto/taskSchemas.js';
+import {
+  createTaskSchema,
+  listTasksQuerySchema,
+  updateTaskSchema,
+} from '../dto/taskSchemas.js';
 export class TasksController {
   constructor(
     private readonly createTask: CreateTaskPort,
@@ -32,7 +36,11 @@ export class TasksController {
     return res.status(201).json({ data });
   }
   async list(req: Request, res: Response) {
-    return res.json({ data: await this.listTasks.execute(this.actor(req)) });
+    this.actor(req);
+    const query = listTasksQuerySchema.parse(req.query);
+    return res.json({
+      data: await this.listTasks.execute(query.page, query.pageSize),
+    });
   }
   async get(req: Request, res: Response) {
     return res.json({

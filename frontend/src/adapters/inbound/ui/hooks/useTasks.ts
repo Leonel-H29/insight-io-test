@@ -2,29 +2,64 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAppDependencies } from '../../../../app/providers/AppContext';
 import { useToast } from './useToast';
 import type { TaskResult } from '../../../../application/task/dto/TaskResult';
+import type { TaskPageResult } from '../../../../application/task/dto/TaskPageResult';
 import type { UpdateTaskCommand } from '../../../../application/task/commands/UpdateTaskCommand';
 export const useTasks = () => {
   const d = useAppDependencies();
   const toast = useToast();
   const [tasks, setTasks] = useState<TaskResult[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [actionError, setActionError] = useState('');
   const [busy, setBusy] = useState<string | null>(null);
-  const reload = useCallback(async () => {
-    setLoading(true);
-    setError('');
-    try {
-      setTasks(await d.listTasks.execute());
-    } catch {
-      setError('Unable to load tasks.');
-    } finally {
-      setLoading(false);
-    }
-  }, [d]);
+  const pageSize = 10;
+  const load = useCallback(
+    async (requestedPage: number, isRefresh = false) => {
+      if (isRefresh) setRefreshing(true);
+      else setLoading(true);
+      setError('');
+      try {
+        const result: TaskPageResult = await d.listTasks.execute(
+          requestedPage,
+          pageSize
+        );
+        setTasks(result.tasks);
+        setPage(result.page);
+        setTotalPages(result.totalPages);
+        setTotalItems(result.totalItems);
+        return result;
+      } catch (loadError) {
+        if (!isRefresh) setError('Unable to load tasks.');
+        throw loadError;
+      } finally {
+        if (isRefresh) setRefreshing(false);
+        else setLoading(false);
+      }
+    },
+    [d]
+  );
   useEffect(() => {
-    void reload();
-  }, [reload]);
+    void load(page).catch(() => undefined);
+  }, [load, page]);
+  const reload = useCallback(async () => {
+    await load(page).catch(() => undefined);
+  }, [load, page]);
+  const refresh = async () => {
+    try {
+      await load(page, true);
+      toast.success('Tasks refreshed', 'The latest tasks are now displayed.');
+    } catch {
+      toast.error('Refresh failed', 'Unable to fetch the latest tasks.');
+    }
+  };
+  const goToPage = (nextPage: number) => {
+    if (nextPage >= 1 && nextPage <= totalPages && nextPage !== page)
+      setPage(nextPage);
+  };
   const create = async (title: string) => {
     setBusy('create');
     setActionError('');
@@ -86,6 +121,10 @@ export const useTasks = () => {
   };
   return {
     tasks,
+    page,
+    totalPages,
+    totalItems,
+    refreshing,
     loading,
     error,
     actionError,
@@ -95,5 +134,7 @@ export const useTasks = () => {
     remove,
     done,
     reload,
+    refresh,
+    goToPage,
   };
 };

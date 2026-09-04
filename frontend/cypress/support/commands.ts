@@ -1,13 +1,17 @@
-Cypress.Commands.add('login', () => {
+Cypress.Commands.add('loginAs', (email: string, password: string) => {
   const domain = Cypress.env('auth0Domain') as string;
-  const email = Cypress.env('email') as string;
-  const password = Cypress.env('password') as string;
   if (!domain || !email || !password)
     throw new Error(
       'Configure CYPRESS_auth0Domain, CYPRESS_email and CYPRESS_password for the real Auth0 E2E test.'
     );
   cy.visit('/login');
   cy.contains('button', 'Sign in with Auth0').click();
+  Cypress.Commands.add('login', () => {
+    cy.loginAs(
+      Cypress.env('email') as string,
+      Cypress.env('password') as string
+    );
+  });
   cy.origin(
     `https://${domain}`,
     { args: { email, password } },

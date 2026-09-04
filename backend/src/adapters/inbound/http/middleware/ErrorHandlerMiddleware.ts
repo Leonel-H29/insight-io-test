@@ -3,6 +3,7 @@ import { ZodError } from 'zod';
 import { TaskNotFoundError } from '../../../../application/task/exceptions/TaskNotFoundError.js';
 import { InvalidTaskStatusTransitionError } from '../../../../domain/task/exceptions/InvalidTaskStatusTransitionError.js';
 import { TaskUpdateNotAllowedError } from '../../../../domain/task/exceptions/TaskUpdateNotAllowedError.js';
+import { TaskCompletionNotAllowedError } from '../../../../application/task/exceptions/TaskCompletionNotAllowedError.js';
 export const errorHandler = (
   err: unknown,
   _req: Request,
@@ -26,6 +27,12 @@ export const errorHandler = (
     res
       .status(404)
       .json({ error: { code: 'TASK_NOT_FOUND', message: err.message } });
+    return;
+  }
+  if (err instanceof TaskCompletionNotAllowedError) {
+    res.status(403).json({
+      error: { code: 'FORBIDDEN', message: err.message },
+    });
     return;
   }
   if (
