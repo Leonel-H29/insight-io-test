@@ -45,6 +45,17 @@ npm run test:e2e
 
 Cypress expects a configured Auth0 user and the application to be running. The shared-visibility E2E scenario is enabled when a second real Auth0 user is supplied through `CYPRESS_emailB` and `CYPRESS_passwordB`; no production authentication bypass is included.
 
+Before running the E2E suite, provide the primary user's credentials and Auth0 tenant domain through Cypress environment variables:
+
+```bash
+export CYPRESS_auth0Domain="your-tenant.eu.auth0.com"
+export CYPRESS_email="cypress-user@example.com"
+export CYPRESS_password="your-password"
+npm run test:e2e
+```
+
+The variables can also be supplied inline. Do not commit real credentials; the `.gitignore` file excludes local environment files. Add `CYPRESS_emailB` and `CYPRESS_passwordB` when running the optional second-user scenario.
+
 ## Production build
 
 ```bash
